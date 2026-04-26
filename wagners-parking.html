@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Wagner Parking</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    :root {
+      --bg: #080808;
+      --surface: #111111;
+      --surface2: #1c1c1c;
+      --surface3: #242424;
+      --border: #272727;
+      --border-bright: #383838;
+      --accent-chuck: #60a5fa;
+      --accent-chuck-glow: rgba(96,165,250,0.15);
+      --accent-amanda: #fb923c;
+      --accent-amanda-glow: rgba(251,146,60,0.15);
+      --text: #efefef;
+      --text-mid: #aaa;
+      --text-dim: #555;
+      --green: #34d399;
+      --green-glow: rgba(52,211,153,0.12);
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+
+    body {
+      font-family: 'Syne', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      max-width: 430px;
+      margin: 0 auto;
+      padding-bottom: 32px;
+    }
+
+    /* ── Header ── */
+    header {
+      padding: 28px 20px 20px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-text h1 {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-dim);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .header-text p {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .header-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+      margin-bottom: 6px;
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* ── Status cards ── */
+    .status-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 18px 20px 6px;
+    }
+
+    .status-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .status-card.has-spot.chuck { border-color: rgba(96,165,250,0.3); background: linear-gradient(135deg, var(--surface) 60%, rgba(96,165,250,0.05)); }
+    .status-card.has-spot.amanda { border-color: rgba(251,146,60,0.3); background: linear-gradient(135deg, var(--surface) 60%, rgba(251,146,60,0.05)); }
+
+    .status-card .who {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+
+    .status-card.has-spot.chuck .who { color: var(--accent-chuck); }
+    .status-card.has-spot.amanda .who { color: var(--accent-amanda); }
+
+    .status-card .spot {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 32px;
+      font-weight: 500;
+      line-height: 1;
+      color: var(--text-dim);
+      letter-spacing: -0.02em;
+    }
+
+    .status-card.has-spot.chuck .spot { color: var(--accent-chuck); }
+    .status-card.has-spot.amanda .spot { color: var(--accent-amanda); }
+
+    .status-card .when {
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-dim);
+      margin-top: 6px;
+    }
+
+    .best-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      background: var(--green-glow);
+      border: 1px solid rgba(52,211,153,0.3);
+      color: var(--green);
+      font-size: 8px;
+      font-weight: 700;
+      font-family: 'Syne', sans-serif;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 5px;
+      vertical-align: middle;
+      position: relative;
+      top: -3px;
+    }
+
+    /* ── Log form ── */
+    .log-section {
+      padding: 20px 20px 0;
+      flex: 1;
+    }
+
+    .section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 10px;
+    }
+
+    /* User selector */
+    .user-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .user-btn {
+      padding: 14px 10px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-dim);
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      letter-spacing: 0.01em;
+    }
+
+    .user-btn:hover { border-color: var(--border-bright); color: var(--text-mid); }
+
+    .user-btn.active.chuck {
+      border-color: var(--accent-chuck);
+      background: var(--accent-chuck-glow);
+      color: var(--accent-chuck);
+      box-shadow: 0 0 0 1px rgba(96,165,250,0.2), inset 0 1px 0 rgba(96,165,250,0.1);
+    }
+
+    .user-btn.active.amanda {
+      border-color: var(--accent-amanda);
+      background: var(--accent-amanda-glow);
+      color: var(--accent-amanda);
+      box-shadow: 0 0 0 1px rgba(251,146,60,0.2), inset 0 1px 0 rgba(251,146,60,0.1);
+    }
+
+    /* Floor grid */
+    .floor-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .floor-btn {
+      aspect-ratio: 1;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .floor-btn:hover { border-color: var(--border-bright); color: var(--text-mid); }
+
+    .floor-btn .best-label {
+      font-size: 7px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      color: var(--green);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .floor-btn.active.chuck {
+      border-color: var(--accent-chuck);
+      background: var(--accent-chuck-glow);
+      color: var(--accent-chuck);
+      box-shadow: 0 0 12px rgba(96,165,250,0.1);
+    }
+
+    .floor-btn.active.amanda {
+      border-color: var(--accent-amanda);
+      background: var(--accent-amanda-glow);
+      color: var(--accent-amanda);
+      box-shadow: 0 0 12px rgba(251,146,60,0.1);
+    }
+
+    /* Side selector */
+    .side-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .side-btn {
+      padding: 18px 16px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 22px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: left;
+    }
+
+    .side-btn:hover { border-color: var(--border-bright); color: var(--text-mid); }
+
+    .side-btn .side-label {
+      display: block;
+      font-family: 'Syne', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+
+    .side-btn.active.chuck {
+      border-color: var(--accent-chuck);
+      background: var(--accent-chuck-glow);
+      color: var(--accent-chuck);
+      box-shadow: 0 0 12px rgba(96,165,250,0.1);
+    }
+
+    .side-btn.active.chuck .side-label { color: rgba(96,165,250,0.6); }
+
+    .side-btn.active.amanda {
+      border-color: var(--accent-amanda);
+      background: var(--accent-amanda-glow);
+      color: var(--accent-amanda);
+      box-shadow: 0 0 12px rgba(251,146,60,0.1);
+    }
+
+    .side-btn.active.amanda .side-label { color: rgba(251,146,60,0.6); }
+
+    /* Log button */
+    .log-btn {
+      width: 100%;
+      padding: 18px;
+      border-radius: var(--radius);
+      border: none;
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      letter-spacing: 0.02em;
+    }
+
+    .log-btn:disabled {
+      background: var(--surface2);
+      color: var(--text-dim);
+      cursor: not-allowed;
+      border: 1px solid var(--border);
+    }
+
+    .log-btn.chuck {
+      background: var(--accent-chuck);
+      color: #05111f;
+      box-shadow: 0 4px 20px rgba(96,165,250,0.25);
+    }
+
+    .log-btn.amanda {
+      background: var(--accent-amanda);
+      color: #1a0800;
+      box-shadow: 0 4px 20px rgba(251,146,60,0.25);
+    }
+
+    .log-btn:active:not(:disabled) { transform: scale(0.98); }
+
+    /* Clear */
+    .clear-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      font-family: 'Syne', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      margin-top: 10px;
+      width: 100%;
+      transition: all 0.15s;
+    }
+
+    .clear-btn:hover { border-color: var(--border-bright); color: var(--text-mid); }
+    .clear-btn:active { opacity: 0.6; }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      background: var(--surface3);
+      border: 1px solid var(--border-bright);
+      color: var(--text);
+      padding: 12px 22px;
+      border-radius: 30px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      opacity: 0;
+      transition: all 0.25s ease;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Debug */
+    #debug {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: #1a0000;
+      color: #ff6b6b;
+      font-size: 11px;
+      font-family: monospace;
+      padding: 6px 10px;
+      max-height: 80px;
+      overflow-y: auto;
+      display: none;
+      z-index: 999;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-text">
+      <h1>Keeping Up the Wagners</h1>
+      <p>Parking Tracker</p>
+    </div>
+    <div class="header-dot"></div>
+  </header>
+
+  <!-- Current status -->
+  <div class="status-row">
+    <div class="status-card chuck">
+      <div class="who">Chuck</div>
+      <div class="spot" id="chuck-spot">—</div>
+      <div class="when" id="chuck-when"></div>
+    </div>
+    <div class="status-card amanda">
+      <div class="who">Amanda</div>
+      <div class="spot" id="amanda-spot">—</div>
+      <div class="when" id="amanda-when"></div>
+    </div>
+  </div>
+
+  <!-- Log form -->
+  <div class="log-section">
+    <div class="section-label">Log My Spot</div>
+
+    <div class="user-row">
+      <button class="user-btn chuck" id="btn-chuck" onclick="selectUser('Chuck')">Chuck</button>
+      <button class="user-btn amanda" id="btn-amanda" onclick="selectUser('Amanda')">Amanda</button>
+    </div>
+
+    <div class="section-label">Floor</div>
+    <div class="floor-grid" id="floor-grid"></div>
+
+    <div class="section-label">Side</div>
+    <div class="side-row">
+      <button class="side-btn" id="btn-L" onclick="selectSide('L')">
+        L <span class="side-label">Left</span>
+      </button>
+      <button class="side-btn" id="btn-R" onclick="selectSide('R')">
+        R <span class="side-label">Right</span>
+      </button>
+    </div>
+
+    <button class="log-btn" id="log-btn" disabled onclick="logSpot()">Log Spot</button>
+    <button class="clear-btn" onclick="clearMySpot()">Clear My Spot</button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <div id="debug"></div>
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB-y3epcNhsVnyaazEnfACz-Jn_p2nEf0o",
+      authDomain: "chuckwagnerpm.firebaseapp.com",
+      databaseURL: "https://chuckwagnerpm-default-rtdb.firebaseio.com",
+      projectId: "chuckwagnerpm",
+      storageBucket: "chuckwagnerpm.firebasestorage.app",
+      messagingSenderId: "659573955476",
+      appId: "1:659573955476:web:fe7eba6e33781530b10d81",
+      measurementId: "G-1PLVCYC3XY"
+    };
+
+    try {
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
+      window._db = db;
+      window._ref = ref;
+      window._set = set;
+      window._remove = remove;
+      dbg("Firebase connected ✓");
+
+      // Listen to both users
+      onValue(ref(db, 'parking/Chuck'), snap => {
+        const data = snap.val();
+        updateCard('chuck', data);
+      });
+
+      onValue(ref(db, 'parking/Amanda'), snap => {
+        const data = snap.val();
+        updateCard('amanda', data);
+      });
+
+    } catch (e) {
+      dbg("Firebase error: " + e.message);
+    }
+  </script>
+
+  <script>
+    let selectedUser = null;
+    let selectedFloor = null;
+    let selectedSide = null;
+
+    // Build floor buttons
+    const floors = ['P0','P1','P2','P3','P4'];
+    const grid = document.getElementById('floor-grid');
+    floors.forEach(f => {
+      const btn = document.createElement('button');
+      btn.className = 'floor-btn';
+      btn.id = 'btn-' + f;
+      btn.onclick = () => selectFloor(f);
+      btn.innerHTML = f + (f === 'P0' ? '<span class="best-label">BEST</span>' : '');
+      grid.appendChild(btn);
+    });
+
+    function selectUser(u) {
+      selectedUser = u;
+      document.querySelectorAll('.user-btn').forEach(b => b.classList.remove('active'));
+      const cls = u.toLowerCase();
+      document.getElementById('btn-' + u).classList.add('active', cls);
+      // Update floor/side button colors
+      updateSelectionColors();
+      updateLogBtn();
+    }
+
+    function selectFloor(f) {
+      selectedFloor = f;
+      document.querySelectorAll('.floor-btn').forEach(b => b.classList.remove('active', 'chuck', 'amanda'));
+      const btn = document.getElementById('btn-' + f);
+      btn.classList.add('active');
+      if (selectedUser) btn.classList.add(selectedUser.toLowerCase());
+      updateLogBtn();
+    }
+
+    function selectSide(s) {
+      selectedSide = s;
+      document.querySelectorAll('.side-btn').forEach(b => b.classList.remove('active', 'chuck', 'amanda'));
+      const btn = document.getElementById('btn-' + s);
+      btn.classList.add('active');
+      if (selectedUser) btn.classList.add(selectedUser.toLowerCase());
+      updateLogBtn();
+    }
+
+    function updateSelectionColors() {
+      if (selectedFloor) {
+        const fb = document.getElementById('btn-' + selectedFloor);
+        fb.classList.remove('chuck','amanda');
+        if (selectedUser) fb.classList.add(selectedUser.toLowerCase());
+      }
+      if (selectedSide) {
+        const sb = document.getElementById('btn-' + selectedSide);
+        sb.classList.remove('chuck','amanda');
+        if (selectedUser) sb.classList.add(selectedUser.toLowerCase());
+      }
+    }
+
+    function updateLogBtn() {
+      const btn = document.getElementById('log-btn');
+      const ready = selectedUser && selectedFloor && selectedSide;
+      btn.disabled = !ready;
+      if (ready) {
+        btn.classList.remove('chuck','amanda');
+        btn.classList.add(selectedUser.toLowerCase());
+        btn.textContent = `Log ${selectedFloor}${selectedSide} for ${selectedUser}`;
+      } else {
+        btn.textContent = 'Log Spot';
+      }
+    }
+
+    async function logSpot() {
+      if (!selectedUser || !selectedFloor || !selectedSide) return;
+      const spot = selectedFloor + selectedSide;
+      const ts = Date.now();
+      try {
+        await window._set(window._ref(window._db, 'parking/' + selectedUser), { spot, ts });
+        showToast(`✓ ${spot} logged for ${selectedUser}`);
+        dbg(`Logged: ${selectedUser} → ${spot}`);
+      } catch(e) {
+        dbg("Write error: " + e.message);
+        showToast("⚠️ Error saving — check connection");
+      }
+    }
+
+    async function clearMySpot() {
+      if (!selectedUser) {
+        showToast("Select a user first");
+        return;
+      }
+      try {
+        await window._remove(window._ref(window._db, 'parking/' + selectedUser));
+        showToast(`Cleared ${selectedUser}'s spot`);
+      } catch(e) {
+        dbg("Clear error: " + e.message);
+      }
+    }
+
+    function updateCard(who, data) {
+      const spotEl = document.getElementById(who + '-spot');
+      const whenEl = document.getElementById(who + '-when');
+      const card = spotEl.closest('.status-card');
+      if (!data || !data.spot) {
+        spotEl.textContent = '—';
+        spotEl.className = 'spot';
+        whenEl.textContent = '';
+        card.classList.remove('has-spot');
+        return;
+      }
+      card.classList.add('has-spot');
+      spotEl.className = 'spot';
+      const isBest = data.spot.startsWith('P0');
+      spotEl.innerHTML = data.spot + (isBest ? ' <span class="best-tag">★ BEST</span>' : '');
+      whenEl.textContent = timeAgo(data.ts);
+      setTimeout(() => { if (data.ts) whenEl.textContent = timeAgo(data.ts); }, 30000);
+    }
+
+    function timeAgo(ts) {
+      if (!ts) return '';
+      const diff = Math.floor((Date.now() - ts) / 1000);
+      if (diff < 60) return 'just now';
+      if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+      if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+      return Math.floor(diff / 86400) + 'd ago';
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    function dbg(msg) {
+      const bar = document.getElementById('debug');
+      if (msg.includes('error') || msg.includes('Error')) {
+        bar.style.display = 'block';
+      }
+      bar.textContent += msg + '\n';
+      console.log('[Wagner]', msg);
+    }
+  </script>
+</body>
+</html>
