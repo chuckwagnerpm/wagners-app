@@ -6,9 +6,9 @@
   <title>Wagner Parking</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
-
+ 
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
+ 
     :root {
       --bg: #080808;
       --surface: #111111;
@@ -28,7 +28,7 @@
       --radius: 16px;
       --radius-sm: 10px;
     }
-
+ 
     body {
       font-family: 'Syne', sans-serif;
       background: var(--bg);
@@ -40,7 +40,7 @@
       margin: 0 auto;
       padding-bottom: 32px;
     }
-
+ 
     /* ── Header ── */
     header {
       padding: 28px 20px 20px;
@@ -49,7 +49,7 @@
       justify-content: space-between;
       border-bottom: 1px solid var(--border);
     }
-
+ 
     .header-text h1 {
       font-size: 10px;
       font-weight: 600;
@@ -58,14 +58,14 @@
       text-transform: uppercase;
       margin-bottom: 4px;
     }
-
+ 
     .header-text p {
       font-size: 22px;
       font-weight: 800;
       letter-spacing: -0.02em;
       color: var(--text);
     }
-
+ 
     .header-dot {
       width: 8px;
       height: 8px;
@@ -75,64 +75,61 @@
       margin-bottom: 6px;
       animation: pulse 2.5s ease-in-out infinite;
     }
-
+ 
     @keyframes pulse {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.4; }
     }
-
-    /* ── Status cards ── */
-    .status-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+ 
+    /* ── Status card (single shared spot) ── */
+    .status-wrap {
       padding: 18px 20px 6px;
     }
-
+ 
     .status-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 16px;
+      padding: 20px;
       position: relative;
       overflow: hidden;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, background 0.2s;
     }
-
-    .status-card.has-spot.chuck { border-color: rgba(96,165,250,0.3); background: linear-gradient(135deg, var(--surface) 60%, rgba(96,165,250,0.05)); }
-    .status-card.has-spot.amanda { border-color: rgba(251,146,60,0.3); background: linear-gradient(135deg, var(--surface) 60%, rgba(251,146,60,0.05)); }
-
+ 
+    .status-card.has-spot.chuck { border-color: rgba(96,165,250,0.35); background: linear-gradient(135deg, var(--surface) 50%, rgba(96,165,250,0.06)); }
+    .status-card.has-spot.amanda { border-color: rgba(251,146,60,0.35); background: linear-gradient(135deg, var(--surface) 50%, rgba(251,146,60,0.06)); }
+ 
     .status-card .who {
       font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.14em;
+      font-weight: 700;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--text-dim);
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
-
+ 
     .status-card.has-spot.chuck .who { color: var(--accent-chuck); }
     .status-card.has-spot.amanda .who { color: var(--accent-amanda); }
-
+ 
     .status-card .spot {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 32px;
+      font-size: 48px;
       font-weight: 500;
       line-height: 1;
       color: var(--text-dim);
       letter-spacing: -0.02em;
     }
-
+ 
     .status-card.has-spot.chuck .spot { color: var(--accent-chuck); }
     .status-card.has-spot.amanda .spot { color: var(--accent-amanda); }
-
+ 
     .status-card .when {
       font-size: 11px;
       font-family: 'JetBrains Mono', monospace;
       color: var(--text-dim);
-      margin-top: 6px;
+      margin-top: 8px;
     }
-
+ 
     .best-tag {
       display: inline-flex;
       align-items: center;
@@ -152,13 +149,13 @@
       position: relative;
       top: -3px;
     }
-
+ 
     /* ── Log form ── */
     .log-section {
       padding: 20px 20px 0;
       flex: 1;
     }
-
+ 
     .section-label {
       font-size: 10px;
       font-weight: 700;
@@ -167,7 +164,7 @@
       color: var(--text-dim);
       margin-bottom: 10px;
     }
-
+ 
     /* User selector */
     .user-row {
       display: grid;
@@ -175,7 +172,7 @@
       gap: 8px;
       margin-bottom: 18px;
     }
-
+ 
     .user-btn {
       padding: 14px 10px;
       border-radius: var(--radius);
@@ -189,23 +186,23 @@
       transition: all 0.18s ease;
       letter-spacing: 0.01em;
     }
-
+ 
     .user-btn:hover { border-color: var(--border-bright); color: var(--text-mid); }
-
+ 
     .user-btn.active.chuck {
       border-color: var(--accent-chuck);
       background: var(--accent-chuck-glow);
       color: var(--accent-chuck);
       box-shadow: 0 0 0 1px rgba(96,165,250,0.2), inset 0 1px 0 rgba(96,165,250,0.1);
     }
-
+ 
     .user-btn.active.amanda {
       border-color: var(--accent-amanda);
       background: var(--accent-amanda-glow);
       color: var(--accent-amanda);
       box-shadow: 0 0 0 1px rgba(251,146,60,0.2), inset 0 1px 0 rgba(251,146,60,0.1);
     }
-
+ 
     /* Floor grid */
     .floor-grid {
       display: grid;
@@ -213,7 +210,7 @@
       gap: 8px;
       margin-bottom: 18px;
     }
-
+ 
     .floor-btn {
       aspect-ratio: 1;
       border-radius: var(--radius-sm);
@@ -231,9 +228,9 @@
       flex-direction: column;
       gap: 3px;
     }
-
+ 
     .floor-btn:hover { border-color: var(--border-bright); color: var(--text-mid); }
-
+ 
     .floor-btn .best-label {
       font-size: 7px;
       font-family: 'Syne', sans-serif;
@@ -242,21 +239,21 @@
       letter-spacing: 0.06em;
       text-transform: uppercase;
     }
-
+ 
     .floor-btn.active.chuck {
       border-color: var(--accent-chuck);
       background: var(--accent-chuck-glow);
       color: var(--accent-chuck);
       box-shadow: 0 0 12px rgba(96,165,250,0.1);
     }
-
+ 
     .floor-btn.active.amanda {
       border-color: var(--accent-amanda);
       background: var(--accent-amanda-glow);
       color: var(--accent-amanda);
       box-shadow: 0 0 12px rgba(251,146,60,0.1);
     }
-
+ 
     /* Side selector */
     .side-row {
       display: grid;
@@ -264,7 +261,7 @@
       gap: 8px;
       margin-bottom: 20px;
     }
-
+ 
     .side-btn {
       padding: 18px 16px;
       border-radius: var(--radius);
@@ -278,9 +275,9 @@
       transition: all 0.15s ease;
       text-align: left;
     }
-
+ 
     .side-btn:hover { border-color: var(--border-bright); color: var(--text-mid); }
-
+ 
     .side-btn .side-label {
       display: block;
       font-family: 'Syne', sans-serif;
@@ -291,25 +288,25 @@
       color: var(--text-dim);
       margin-top: 4px;
     }
-
+ 
     .side-btn.active.chuck {
       border-color: var(--accent-chuck);
       background: var(--accent-chuck-glow);
       color: var(--accent-chuck);
       box-shadow: 0 0 12px rgba(96,165,250,0.1);
     }
-
+ 
     .side-btn.active.chuck .side-label { color: rgba(96,165,250,0.6); }
-
+ 
     .side-btn.active.amanda {
       border-color: var(--accent-amanda);
       background: var(--accent-amanda-glow);
       color: var(--accent-amanda);
       box-shadow: 0 0 12px rgba(251,146,60,0.1);
     }
-
+ 
     .side-btn.active.amanda .side-label { color: rgba(251,146,60,0.6); }
-
+ 
     /* Log button */
     .log-btn {
       width: 100%;
@@ -323,28 +320,28 @@
       transition: all 0.18s ease;
       letter-spacing: 0.02em;
     }
-
+ 
     .log-btn:disabled {
       background: var(--surface2);
       color: var(--text-dim);
       cursor: not-allowed;
       border: 1px solid var(--border);
     }
-
+ 
     .log-btn.chuck {
       background: var(--accent-chuck);
       color: #05111f;
       box-shadow: 0 4px 20px rgba(96,165,250,0.25);
     }
-
+ 
     .log-btn.amanda {
       background: var(--accent-amanda);
       color: #1a0800;
       box-shadow: 0 4px 20px rgba(251,146,60,0.25);
     }
-
+ 
     .log-btn:active:not(:disabled) { transform: scale(0.98); }
-
+ 
     /* Clear */
     .clear-btn {
       background: none;
@@ -361,10 +358,10 @@
       width: 100%;
       transition: all 0.15s;
     }
-
+ 
     .clear-btn:hover { border-color: var(--border-bright); color: var(--text-mid); }
     .clear-btn:active { opacity: 0.6; }
-
+ 
     /* Toast */
     .toast {
       position: fixed;
@@ -386,12 +383,12 @@
       z-index: 100;
       backdrop-filter: blur(12px);
     }
-
+ 
     .toast.show {
       opacity: 1;
       transform: translateX(-50%) translateY(0);
     }
-
+ 
     /* Debug */
     #debug {
       position: fixed;
@@ -409,7 +406,7 @@
   </style>
 </head>
 <body>
-
+ 
   <header>
     <div class="header-text">
       <h1>Keeping Up the Wagners</h1>
@@ -417,33 +414,28 @@
     </div>
     <div class="header-dot"></div>
   </header>
-
-  <!-- Current status -->
-  <div class="status-row">
-    <div class="status-card chuck">
-      <div class="who">Chuck</div>
-      <div class="spot" id="chuck-spot">—</div>
-      <div class="when" id="chuck-when"></div>
-    </div>
-    <div class="status-card amanda">
-      <div class="who">Amanda</div>
-      <div class="spot" id="amanda-spot">—</div>
-      <div class="when" id="amanda-when"></div>
+ 
+  <!-- Current status - single shared spot -->
+  <div class="status-wrap">
+    <div class="status-card" id="status-card">
+      <div class="who" id="status-who">No spot logged</div>
+      <div class="spot" id="status-spot">—</div>
+      <div class="when" id="status-when"></div>
     </div>
   </div>
-
+ 
   <!-- Log form -->
   <div class="log-section">
-    <div class="section-label">Log My Spot</div>
-
+    <div class="section-label">Who's Parking?</div>
+ 
     <div class="user-row">
-      <button class="user-btn chuck" id="btn-chuck" onclick="selectUser('Chuck')">Chuck</button>
-      <button class="user-btn amanda" id="btn-amanda" onclick="selectUser('Amanda')">Amanda</button>
+      <button class="user-btn chuck" id="btn-Chuck" onclick="selectUser('Chuck')">Chuck</button>
+      <button class="user-btn amanda" id="btn-Amanda" onclick="selectUser('Amanda')">Amanda</button>
     </div>
-
+ 
     <div class="section-label">Floor</div>
     <div class="floor-grid" id="floor-grid"></div>
-
+ 
     <div class="section-label">Side</div>
     <div class="side-row">
       <button class="side-btn" id="btn-L" onclick="selectSide('L')">
@@ -453,19 +445,19 @@
         R <span class="side-label">Right</span>
       </button>
     </div>
-
+ 
     <button class="log-btn" id="log-btn" disabled onclick="logSpot()">Log Spot</button>
-    <button class="clear-btn" onclick="clearMySpot()">Clear My Spot</button>
+    <button class="clear-btn" onclick="clearSpot()">Clear Spot</button>
   </div>
-
+ 
   <div class="toast" id="toast"></div>
   <div id="debug"></div>
-
+ 
   <!-- Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-
+ 
     const firebaseConfig = {
       apiKey: "AIzaSyB-y3epcNhsVnyaazEnfACz-Jn_p2nEf0o",
       authDomain: "chuckwagnerpm.firebaseapp.com",
@@ -476,7 +468,7 @@
       appId: "1:659573955476:web:fe7eba6e33781530b10d81",
       measurementId: "G-1PLVCYC3XY"
     };
-
+ 
     try {
       const app = initializeApp(firebaseConfig);
       const db = getDatabase(app);
@@ -485,28 +477,22 @@
       window._set = set;
       window._remove = remove;
       dbg("Firebase connected ✓");
-
-      // Listen to both users
-      onValue(ref(db, 'parking/Chuck'), snap => {
-        const data = snap.val();
-        updateCard('chuck', data);
+ 
+      // Single shared spot listener
+      onValue(ref(db, 'parking/car'), snap => {
+        updateCard(snap.val());
       });
-
-      onValue(ref(db, 'parking/Amanda'), snap => {
-        const data = snap.val();
-        updateCard('amanda', data);
-      });
-
+ 
     } catch (e) {
       dbg("Firebase error: " + e.message);
     }
   </script>
-
+ 
   <script>
     let selectedUser = null;
     let selectedFloor = null;
     let selectedSide = null;
-
+ 
     // Build floor buttons
     const floors = ['P0','P1','P2','P3','P4'];
     const grid = document.getElementById('floor-grid');
@@ -518,17 +504,15 @@
       btn.innerHTML = f + (f === 'P0' ? '<span class="best-label">BEST</span>' : '');
       grid.appendChild(btn);
     });
-
+ 
     function selectUser(u) {
       selectedUser = u;
-      document.querySelectorAll('.user-btn').forEach(b => b.classList.remove('active'));
-      const cls = u.toLowerCase();
-      document.getElementById('btn-' + u).classList.add('active', cls);
-      // Update floor/side button colors
+      document.querySelectorAll('.user-btn').forEach(b => b.classList.remove('active', 'chuck', 'amanda'));
+      document.getElementById('btn-' + u).classList.add('active', u.toLowerCase());
       updateSelectionColors();
       updateLogBtn();
     }
-
+ 
     function selectFloor(f) {
       selectedFloor = f;
       document.querySelectorAll('.floor-btn').forEach(b => b.classList.remove('active', 'chuck', 'amanda'));
@@ -537,7 +521,7 @@
       if (selectedUser) btn.classList.add(selectedUser.toLowerCase());
       updateLogBtn();
     }
-
+ 
     function selectSide(s) {
       selectedSide = s;
       document.querySelectorAll('.side-btn').forEach(b => b.classList.remove('active', 'chuck', 'amanda'));
@@ -546,7 +530,7 @@
       if (selectedUser) btn.classList.add(selectedUser.toLowerCase());
       updateLogBtn();
     }
-
+ 
     function updateSelectionColors() {
       if (selectedFloor) {
         const fb = document.getElementById('btn-' + selectedFloor);
@@ -559,7 +543,7 @@
         if (selectedUser) sb.classList.add(selectedUser.toLowerCase());
       }
     }
-
+ 
     function updateLogBtn() {
       const btn = document.getElementById('log-btn');
       const ready = selectedUser && selectedFloor && selectedSide;
@@ -567,58 +551,59 @@
       if (ready) {
         btn.classList.remove('chuck','amanda');
         btn.classList.add(selectedUser.toLowerCase());
-        btn.textContent = `Log ${selectedFloor}${selectedSide} for ${selectedUser}`;
+        btn.textContent = `Log ${selectedFloor}${selectedSide} — ${selectedUser}`;
       } else {
         btn.textContent = 'Log Spot';
       }
     }
-
+ 
     async function logSpot() {
       if (!selectedUser || !selectedFloor || !selectedSide) return;
       const spot = selectedFloor + selectedSide;
       const ts = Date.now();
       try {
-        await window._set(window._ref(window._db, 'parking/' + selectedUser), { spot, ts });
-        showToast(`✓ ${spot} logged for ${selectedUser}`);
+        await window._set(window._ref(window._db, 'parking/car'), { spot, user: selectedUser, ts });
+        showToast(`✓ ${spot} logged by ${selectedUser}`);
         dbg(`Logged: ${selectedUser} → ${spot}`);
       } catch(e) {
         dbg("Write error: " + e.message);
         showToast("⚠️ Error saving — check connection");
       }
     }
-
-    async function clearMySpot() {
-      if (!selectedUser) {
-        showToast("Select a user first");
-        return;
-      }
+ 
+    async function clearSpot() {
       try {
-        await window._remove(window._ref(window._db, 'parking/' + selectedUser));
-        showToast(`Cleared ${selectedUser}'s spot`);
+        await window._remove(window._ref(window._db, 'parking/car'));
+        showToast("Spot cleared");
       } catch(e) {
         dbg("Clear error: " + e.message);
       }
     }
-
-    function updateCard(who, data) {
-      const spotEl = document.getElementById(who + '-spot');
-      const whenEl = document.getElementById(who + '-when');
-      const card = spotEl.closest('.status-card');
+ 
+    function updateCard(data) {
+      const spotEl = document.getElementById('status-spot');
+      const whenEl = document.getElementById('status-when');
+      const whoEl = document.getElementById('status-who');
+      const card = document.getElementById('status-card');
+ 
+      card.classList.remove('has-spot', 'chuck', 'amanda');
+ 
       if (!data || !data.spot) {
+        whoEl.textContent = 'No spot logged';
         spotEl.textContent = '—';
-        spotEl.className = 'spot';
         whenEl.textContent = '';
-        card.classList.remove('has-spot');
         return;
       }
-      card.classList.add('has-spot');
-      spotEl.className = 'spot';
+ 
+      const cls = data.user ? data.user.toLowerCase() : '';
+      card.classList.add('has-spot', cls);
+      whoEl.textContent = data.user ? `Parked by ${data.user}` : 'Car parked';
       const isBest = data.spot.startsWith('P0');
       spotEl.innerHTML = data.spot + (isBest ? ' <span class="best-tag">★ BEST</span>' : '');
       whenEl.textContent = timeAgo(data.ts);
-      setTimeout(() => { if (data.ts) whenEl.textContent = timeAgo(data.ts); }, 30000);
+      setTimeout(() => { if (data && data.ts) whenEl.textContent = timeAgo(data.ts); }, 30000);
     }
-
+ 
     function timeAgo(ts) {
       if (!ts) return '';
       const diff = Math.floor((Date.now() - ts) / 1000);
@@ -627,14 +612,14 @@
       if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
       return Math.floor(diff / 86400) + 'd ago';
     }
-
+ 
     function showToast(msg) {
       const t = document.getElementById('toast');
       t.textContent = msg;
       t.classList.add('show');
       setTimeout(() => t.classList.remove('show'), 2500);
     }
-
+ 
     function dbg(msg) {
       const bar = document.getElementById('debug');
       if (msg.includes('error') || msg.includes('Error')) {
@@ -646,3 +631,4 @@
   </script>
 </body>
 </html>
+ 
